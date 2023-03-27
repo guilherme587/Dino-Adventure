@@ -21,12 +21,12 @@ public class enemy : MonoBehaviour
     void Update()
     {
         rb.velocity = new Vector2(x * vel, rb.velocity.y);
-        rb.transform.localScale = new Vector3(x, 1, 1);
+        rb.transform.localScale = new Vector3(-x, 1, 1);
     }
 
     private void OnCollisionEnter2D(Collision2D outro){
         if(outro.gameObject.CompareTag("parede")) x *= -1f;
-        //if(outro.gameObject.CompareTag("Player")) outro.gameObject.hited(dano);
+        if(outro.gameObject.CompareTag("Player")) outro.gameObject.GetComponent<player>().hited(dano);
     }
 
     void OnDestroy()

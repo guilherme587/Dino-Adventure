@@ -26,8 +26,14 @@ public class player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(vida > 0){
+            move();
+        }      
+    }
+
+    private void move(){
         float x = Input.GetAxisRaw("Horizontal");
-        if(x != 0) sprite.transform.localScale = new Vector3(x, 1, 0);
+        if(x != 0) transform.localScale = new Vector3(x, 1, 1);
         rb.velocity = new Vector2(x * vel, rb.velocity.y);
         
         if(jumps > 0){
@@ -36,17 +42,23 @@ public class player : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, forcaDoPulo);
             }
         }
-
-        
     }
 
     private void OnCollisionEnter2D(Collision2D par){
-            if(par.gameObject.CompareTag("chao")) jumps = _jumps;
+        if(par != null){
+            if(par.gameObject.CompareTag("chao") || par.gameObject.CompareTag("parede")) jumps = _jumps;
             if(par.gameObject.CompareTag("inimigo")) Destroy(par.gameObject);//par.gameObject.morte();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D par) {
+        if(par != null){
             if(par.gameObject.CompareTag("item")) Destroy(par.gameObject);
+        }
     }
 
     public void hited(float dano){
         vida -= dano;
+        print(dano);
     }
 }

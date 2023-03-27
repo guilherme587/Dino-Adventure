@@ -7,6 +7,7 @@ public class item : MonoBehaviour
     public float amplitude = 0.5f;
     public float speed = 1f;
     public float rotationSpeed = 180f;
+    public float gridSize = 1f;
 
     private Vector3 startPos;
 
@@ -14,6 +15,7 @@ public class item : MonoBehaviour
     void Start()
     {
         startPos = transform.position;
+        gridPosition();
     }
 
     // Update is called once per frame
@@ -23,7 +25,15 @@ public class item : MonoBehaviour
         transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
     }
 
-    private void OnCollisionEnter(Collision par){
+    private void gridPosition(){
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Round(pos.x / gridSize) * gridSize;
+        pos.y = Mathf.Round(pos.y / gridSize) * gridSize;
+        transform.position = pos;
+    }
+
+    void OnCollisionEnter2D(Collision2D par)
+    {
         if(par.gameObject.CompareTag("Player")) print("this");
     }
 }

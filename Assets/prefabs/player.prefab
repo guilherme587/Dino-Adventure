@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c68a87dea2178fa43844da9cba844dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vida: 5
   vel: 5
   forcaDoPulo: 5
   jumps: 10
