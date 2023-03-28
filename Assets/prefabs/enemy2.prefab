@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3911705605650066109}
   - component: {fileID: 8290663075173641240}
   - component: {fileID: 604295059079280581}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,9 +117,9 @@ GameObject:
   - component: {fileID: 601193264698466522}
   - component: {fileID: 1943909597515684544}
   - component: {fileID: 8281595323420354502}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: enemy2
-  m_TagString: Untagged
+  m_TagString: inimigo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

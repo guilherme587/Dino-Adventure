@@ -6,6 +6,7 @@ public class enemy2 : MonoBehaviour
 {
     public float amplitude = 2f;
     public float speed = 3f;
+    public float dano = 2;
 
     private Vector3 startPos;
 
@@ -20,6 +21,6 @@ public class enemy2 : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
-        if(other.gameObject.CompareTag("Player")) print("agui collid player");
+        if(other.gameObject.CompareTag("Player") && other.gameObject.transform.position.y < transform.position.y) other.gameObject.GetComponent<player>().hited(dano, 1f);
     }
 }

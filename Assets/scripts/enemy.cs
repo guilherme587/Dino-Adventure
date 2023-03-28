@@ -27,7 +27,7 @@ public class enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D outro){
         if(outro.gameObject.CompareTag("parede")) x *= -1f;
-        if(outro.gameObject.CompareTag("Player")) outro.gameObject.GetComponent<player>().hited(dano, x);
+        if(outro.gameObject.CompareTag("Player") && outro.gameObject.transform.position.y < transform.position.y ) outro.gameObject.GetComponent<player>().hited(dano, x);
     }
 
     void OnDestroy()
