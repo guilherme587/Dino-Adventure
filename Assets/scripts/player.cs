@@ -11,15 +11,17 @@ public class player : MonoBehaviour
 
     private float _jumps;
     private Rigidbody2D rb;
-    private SpriteRenderer sprite;
-    GameObject myObject;
+    public Animator anim;
+
+    public enum animStates{
+        idle, walk, run, jumping, hit, hitted, donw
+    }
+    public animStates animState = animStates.idle;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        myObject = GameObject.Find("Square");
-        sprite = myObject.GetComponent<SpriteRenderer>();
         _jumps = jumps;
     }
 
@@ -28,26 +30,73 @@ public class player : MonoBehaviour
     {
         if(vida > 0){
             move();
-        }      
+        }
+        else animState = animStates.hitted;
+        animacao();
     }
 
     private void move(){
         float x = Input.GetAxisRaw("Horizontal");
-        if(x != 0) transform.localScale = new Vector3(x, 1, 1);
+        if(x != 0){
+            if(x > 0) GetComponent<SpriteRenderer>().flipX = false; else GetComponent<SpriteRenderer>().flipX = true;
+            animState = animStates.walk;
+        }
+        else animState = animStates.idle;
         rb.velocity = new Vector2(x * vel, rb.velocity.y);
         
         if(jumps > 0){
             if(Input.GetButtonDown("Jump")){
                 jumps--;
                 rb.velocity = new Vector2(rb.velocity.x, forcaDoPulo);
+                animState = animStates.jumping;
             }
+        }
+        if(Input.GetButtonDown("Run")){
+            print("run");
+            animState = animStates.run;
+        }
+        if(Input.GetButtonDown("Abaixar")){
+            print("abaixar");
+            animState = animStates.donw;
+        }
+    }
+
+    private void animacao(){
+        if(rb.velocity.y > 2) animState = animStates.jumping;
+        foreach(AnimatorControllerParameter i in anim.parameters) if(i.type == AnimatorControllerParameterType.Bool) anim.SetBool(i.name, false);
+        switch(animState){
+            case animStates.idle:
+                anim.SetBool("walk", false);
+                break;
+            case animStates.walk:
+                anim.SetBool("walk", true);
+                break;
+            case animStates.run:
+                anim.SetBool("run", true);
+                break;
+            case animStates.jumping:
+                anim.SetBool("jumping", true);
+                break;
+            case animStates.hit:
+                break;
+            case animStates.hitted:
+                anim.SetBool("hitted", true);
+                break;
+            default:
+                break;
         }
     }
 
     private void OnCollisionEnter2D(Collision2D par){
         if(par != null){
-            if(par.gameObject.CompareTag("chao") || par.gameObject.CompareTag("parede")) jumps = _jumps;
-            if(par.gameObject.CompareTag("inimigo")) Destroy(par.gameObject);//par.gameObject.morte();
+            if(par.gameObject.CompareTag("chao") || par.gameObject.CompareTag("parede")){
+                jumps = _jumps;
+                animState = animStates.idle;
+            }
+            if(par.gameObject.CompareTag("inimigo") && transform.position.y > par.gameObject.transform.position.y){
+                Destroy(par.gameObject);
+                rb.velocity = new Vector2(rb.velocity.x, forcaDoPulo); 
+            }
         }
     }
 
@@ -57,8 +106,8 @@ public class player : MonoBehaviour
         }
     }
 
-    public void hited(float dano){
+    public void hited(float dano, float x){
         vida -= dano;
-        print(dano);
+        rb.velocity = new Vector2(x * forcaDoPulo, forcaDoPulo);
     }
 }
