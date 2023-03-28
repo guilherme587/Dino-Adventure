@@ -8,10 +8,12 @@ public class player : MonoBehaviour
     public float vel = 5;
     public float forcaDoPulo = 5;
     public float jumps = 1;
+    public float dano = 1;
+    public Animator anim;
 
     private float _jumps;
     private Rigidbody2D rb;
-    public Animator anim;
+    private bool escada = false;
 
     public enum animStates{
         idle, walk, run, jumping, hit, hitted, donw
@@ -22,6 +24,7 @@ public class player : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        print(rb.gravityScale);
         _jumps = jumps;
     }
 
@@ -37,12 +40,14 @@ public class player : MonoBehaviour
 
     private void move(){
         float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
         if(x != 0){
             if(x > 0) GetComponent<SpriteRenderer>().flipX = false; else GetComponent<SpriteRenderer>().flipX = true;
             animState = animStates.walk;
         }
         else animState = animStates.idle;
-        rb.velocity = new Vector2(x * vel, rb.velocity.y);
+        if(!escada) rb.velocity = new Vector2(x * vel, rb.velocity.y);
+        else rb.velocity = new Vector2(x * vel, y * vel);
         
         if(jumps > 0){
             if(Input.GetButtonDown("Jump")){
@@ -51,14 +56,14 @@ public class player : MonoBehaviour
                 animState = animStates.jumping;
             }
         }
-        if(Input.GetButtonDown("Run")){
-            print("run");
-            animState = animStates.run;
-        }
-        if(Input.GetButtonDown("Abaixar")){
-            print("abaixar");
-            animState = animStates.donw;
-        }
+        // if(Input.GetButtonDown("Run")){
+        //     print("run");
+        //     animState = animStates.run;
+        // }
+        // if(Input.GetButtonDown("Abaixar")){
+        //     print("abaixar");
+        //     animState = animStates.donw;
+        // }
     }
 
     private void animacao(){
@@ -103,6 +108,19 @@ public class player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D par) {
         if(par != null){
             if(par.gameObject.CompareTag("item")) Destroy(par.gameObject);
+            if(par.gameObject.CompareTag("escada")){
+                rb.gravityScale  = 0f;
+                escada = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other) {
+        if(other != null){
+            if(other.gameObject.CompareTag("escada")){
+                rb.gravityScale  = 1f;
+                escada = false;
+            }
         }
     }
 
